@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+    <!-- Tema NORMAL de la app -->
+<resources>
+    <style name="Theme.MerqueloApp" parent="Theme.AppCompat.DayNight.NoActionBar" />
+</resources>
+
+
