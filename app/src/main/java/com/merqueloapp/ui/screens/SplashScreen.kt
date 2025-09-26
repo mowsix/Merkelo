@@ -29,10 +29,10 @@ fun SplashScreen(
 
     var contador by remember { mutableIntStateOf(0) }
 
-    // Lanzamos animaciones en secuencia
+    // animaciones en secuencia
     LaunchedEffect(Unit) {
         repeat(3) {
-            delay(800)
+            delay(700)
             contador++
         }
         goToHome.invoke()

@@ -4,16 +4,25 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.merqueloapp.ui.screens.HomeScreen
+import com.merqueloapp.ui.screens.MarketScreen
+import com.merqueloapp.ui.screens.ProfileScreen
 import com.merqueloapp.ui.screens.SplashScreen
+import com.merqueloapp.ui.screens.StoresScreen
 
 @Composable
 fun AppNavigation() {
     val nav = rememberNavController()
+    val backStackEntry by nav.currentBackStackEntryAsState()
+    val currentRoute = backStackEntry?.destination?.route ?: Routes.HOME
+
     Surface(Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
         NavHost(
             navController = nav,
@@ -24,20 +33,49 @@ fun AppNavigation() {
                     goToHome = {
                         nav.navigate(Routes.HOME) {
                             popUpTo(Routes.SPLASH) { inclusive = true }
+                            launchSingleTop = true
                         }
                     }
                 )
             }
-            composable(Routes.HOME) { HomeScreen(
-                onCreateNew = { /* TODO: abrir pantalla crear lista */ },
-                onOpenList = { /* TODO: abrir detalle lista */ },
-                onTabSelected = { route ->
-                    // Por ahora sólo HOME está implementado
-                    if (route != Routes.HOME) {
-                        // TODO: navega a CART/STORES/PROFILE cuando existan
-                    }
-                }
-            ) }
+
+            composable(Routes.HOME) {
+                HomeScreen(
+                    currentRoute = currentRoute,
+                    onCreateNew = { /* TODO: abrir pantalla crear lista */ },
+                    onOpenList = { /* TODO: abrir detalle lista */ },
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                )
+            }
+
+            composable(Routes.MARKET) {
+                MarketScreen(
+                    currentRoute = currentRoute,
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                )
+            }
+
+            composable(Routes.STORES) {
+                StoresScreen(
+                    currentRoute = currentRoute,
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                )
+            }
+
+            composable(Routes.PROFILE) {
+                ProfileScreen(
+                    currentRoute = currentRoute,
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                )
+            }
         }
+    }
+}
+
+private fun navigateSingleTopTo(navRoute: String, navController: NavController) {
+    navController.navigate(navRoute) {
+        launchSingleTop = true
+        restoreState = true
+        popUpTo(navController.graph.startDestinationId) { saveState = true }
     }
 }
