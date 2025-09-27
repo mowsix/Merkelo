@@ -24,6 +24,7 @@ import com.merqueloapp.ui.theme.MerkeloRed
 fun MarketScreen(
     currentRoute: String,
     onSelectTab: (String) -> Unit,
+    onCreateNew: () -> Unit,
 ) {
     Scaffold(
         topBar = { AppTopBar(title = "Mercado") },
@@ -60,7 +61,7 @@ fun MarketScreen(
             // Botón "Crear nuevo"
             RoundedBigButton(
                 text = "Crear nuevo",
-                onClick = { /* TODO: navegar a pantalla de crear lista */ },
+                onClick = onCreateNew,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 backgroundColor = MerkeloRed
             )

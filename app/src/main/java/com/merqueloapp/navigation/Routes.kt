@@ -6,6 +6,7 @@ object Routes {
     const val MARKET = "market"
     const val STORES = "stores"
     const val PROFILE = "profile"
+    const val CREATE_LIST = "create_list"
 }
 
 object SplashConfig {
