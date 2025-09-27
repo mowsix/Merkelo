@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.merqueloapp.navigation.Routes
 import com.merqueloapp.ui.components.AppBottomBar
 import com.merqueloapp.ui.components.AppTopBar
@@ -19,12 +20,11 @@ import com.merqueloapp.ui.components.AppTopBar
 fun HomeScreen(
     currentRoute: String,
     onCreateNew: () -> Unit,
-    onOpenList: (String) -> Unit,
-    onSelectTab: (String) -> Unit
+    onOpenList: (String) -> Unit,  // por ahora pasamos el nombre; luego usaremos id
+    onSelectTab: (String) -> Unit,
+    vm: HomeViewModel = viewModel()
 ) {
-    val lists = remember {
-        mutableStateListOf("Lista Mercado 1", "Lista Mercado 2", "Lista Desayuno")
-    }
+    val lists by vm.lists.collectAsState()
 
     Scaffold(
         topBar = { AppTopBar(title = "Inicio") },
@@ -55,9 +55,9 @@ fun HomeScreen(
                     fontSize = 28.sp
                 )
             }
-            items(lists) { title ->
+            items(lists) { list ->
                 ElevatedCard(
-                    onClick = { onOpenList(title) },
+                    onClick = { onOpenList(list.name) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp)
@@ -69,14 +69,19 @@ fun HomeScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = title,
+                            text = list.name,
                             style = MaterialTheme.typography.titleLarge,
                             fontSize = 22.sp
                         )
                     }
                 }
             }
+            if (lists.isEmpty()) {
+                item { Spacer(Modifier.height(20.dp)) }
+                item { Text("Aún no tienes listas. ¡Crea la primera!", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+            }
             item { Spacer(Modifier.height(80.dp)) }
         }
     }
 }
+
