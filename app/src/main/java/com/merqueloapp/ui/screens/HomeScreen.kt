@@ -20,7 +20,7 @@ import com.merqueloapp.ui.components.AppTopBar
 fun HomeScreen(
     currentRoute: String,
     onCreateNew: () -> Unit,
-    onOpenList: (String) -> Unit,  // por ahora pasamos el nombre; luego usaremos id
+    onOpenList: (Long) -> Unit,
     onSelectTab: (String) -> Unit,
     vm: HomeViewModel = viewModel()
 ) {
@@ -57,7 +57,7 @@ fun HomeScreen(
             }
             items(lists) { list ->
                 ElevatedCard(
-                    onClick = { onOpenList(list.name) },
+                    onClick = { onOpenList(list.id) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp)

@@ -10,6 +10,10 @@ interface MarketListDao {
 
     @Query("SELECT * FROM market_lists ORDER BY createdAt DESC")
     fun observeLists(): kotlinx.coroutines.flow.Flow<List<MarketListEntity>>
+
+    @Query("SELECT * FROM market_lists WHERE id = :id LIMIT 1")
+    suspend fun getById(id: Long): MarketListEntity
+
 }
 
 @Dao
@@ -28,4 +32,7 @@ interface ListItemDao {
     suspend fun getProductSuggestions(): List<String>
     @Query("SELECT * FROM list_items WHERE listId = :listId AND storeId = :storeId")
     suspend fun getItemsForStore(listId: Long, storeId: Long): List<ListItemEntity>
+    @Query("SELECT * FROM list_items WHERE storeId = :storeId ORDER BY id")
+    suspend fun getItemsForStore(storeId: Long): List<ListItemEntity>
+
 }
