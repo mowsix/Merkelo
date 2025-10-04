@@ -75,12 +75,12 @@ fun ListDetailScreen(
                     items(detail!!.groups) { group ->
                         Text(
                             text = group.storeName,
-                            style = MaterialTheme.typography.titleMedium,
+                            style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Medium
                         )
                         Spacer(Modifier.height(6.dp))
                         group.items.forEach { entry ->
-                            Text("• ${entry.name} x${entry.quantity}", style = MaterialTheme.typography.bodyMedium)
+                            Text("• ${entry.name} x${entry.quantity}", style = MaterialTheme.typography.bodyLarge)
                         }
                         Spacer(Modifier.height(16.dp))
                     }
