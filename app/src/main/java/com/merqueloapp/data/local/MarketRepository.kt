@@ -92,6 +92,32 @@ class MarketRepository(context: Context) {
         }
     }
 
+    // Devuelve la lista (nombre) + tiendas con sus items
+    suspend fun getListDetail(listId: Long): ListDetail {
+        val list = listDao.getById(listId)              // 👈 requiere DAO getById
+        val stores = storeDao.getStoresForList(listId)
+        val groups = stores.map { st ->
+            val items = itemDao.getItemsForStore(st.id) // 👈 requiere DAO getItemsForStore
+                .map { ProductEntry(it.productName, it.quantity) }
+            StoreGroup(storeName = st.storeName, items = items)
+        }
+        return ListDetail(listId = list.id, listName = list.name, groups = groups)
+    }
+
+    // Modelos para la UI
+    data class ListDetail(
+        val listId: Long,
+        val listName: String,
+        val groups: List<StoreGroup>
+    )
+    data class StoreGroup(
+        val storeName: String,
+        val items: List<ProductEntry>
+    )
+    data class ProductEntry(
+        val name: String,
+        val quantity: Int
+    )
     /* ---------------- Sugerencias globales ---------------- */
 
     suspend fun storeSuggestions(): List<String> = storeDao.getStoreSuggestions()

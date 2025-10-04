@@ -7,13 +7,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.merqueloapp.ui.screens.AddProductScreen
 import com.merqueloapp.ui.screens.CreateListScreen
 import com.merqueloapp.ui.screens.HomeScreen
+import com.merqueloapp.ui.screens.ListDetailScreen
 import com.merqueloapp.ui.screens.MarketScreen
 import com.merqueloapp.ui.screens.ProfileScreen
 import com.merqueloapp.ui.screens.SplashScreen
@@ -44,8 +47,9 @@ fun AppNavigation() {
             composable(Routes.HOME) {
                 HomeScreen(
                     currentRoute = currentRoute,
-                    onCreateNew = { /* TODO: abrir pantalla crear lista */ },
-                    onOpenList = { /* TODO: abrir detalle lista */ },
+                    onCreateNew = { nav.navigate(Routes.CREATE_LIST)},
+                    onOpenList = { id ->
+                        nav.navigate(Routes.listDetailRoute(id)) },
                     onSelectTab = { route -> navigateSingleTopTo(route, nav) }
                 )
             }
@@ -83,6 +87,17 @@ fun AppNavigation() {
             composable(Routes.ADD_PRODUCT) {
                 AddProductScreen(
                     currentRoute = Routes.MARKET,
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                )
+            }
+            composable(
+                route = Routes.LIST_DETAIL,
+                arguments = listOf(navArgument("listId") { type = NavType.LongType })
+            ) { backStack ->
+                val listId = backStack.arguments?.getLong("listId") ?: 0L
+                ListDetailScreen(
+                    listId = listId,
+                    currentRoute = Routes.HOME,
                     onSelectTab = { route -> navigateSingleTopTo(route, nav) }
                 )
             }
