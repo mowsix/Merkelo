@@ -25,6 +25,7 @@ fun MarketScreen(
     currentRoute: String,
     onSelectTab: (String) -> Unit,
     onCreateNew: () -> Unit,
+    onAddProduct: () -> Unit,
 ) {
     Scaffold(
         topBar = { AppTopBar(title = "Mercado") },
@@ -83,7 +84,7 @@ fun MarketScreen(
             // Botón "Agregar producto"
             RoundedBigButton(
                 text = "Agregar producto",
-                onClick = { /* TODO: navegar a seleccionar lista y agregar item */ },
+                onClick = { onAddProduct.invoke() },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),

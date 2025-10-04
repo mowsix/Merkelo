@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.merqueloapp.ui.screens.AddProductScreen
 import com.merqueloapp.ui.screens.CreateListScreen
 import com.merqueloapp.ui.screens.HomeScreen
 import com.merqueloapp.ui.screens.MarketScreen
@@ -53,13 +54,14 @@ fun AppNavigation() {
                 MarketScreen(
                     currentRoute = currentRoute,
                     onSelectTab = { route -> navigateSingleTopTo(route, nav) },
-                    onCreateNew = { nav.navigate(Routes.CREATE_LIST) }   // 👈 navegar
+                    onCreateNew = { nav.navigate(Routes.CREATE_LIST) },
+                    onAddProduct = { nav.navigate(Routes.ADD_PRODUCT) }
                 )
             }
 
             composable(Routes.CREATE_LIST) {
-                CreateListScreen(                                     // 👈 pantalla destino mínima
-                    currentRoute = Routes.MARKET,                     // para que la bottom bar quede en “Market”
+                CreateListScreen(
+                    currentRoute = Routes.MARKET,
                     onSelectTab = { route -> navigateSingleTopTo(route, nav) }
                 )
             }
@@ -74,6 +76,13 @@ fun AppNavigation() {
             composable(Routes.PROFILE) {
                 ProfileScreen(
                     currentRoute = currentRoute,
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                )
+            }
+
+            composable(Routes.ADD_PRODUCT) {
+                AddProductScreen(
+                    currentRoute = Routes.MARKET,
                     onSelectTab = { route -> navigateSingleTopTo(route, nav) }
                 )
             }
