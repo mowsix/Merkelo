@@ -17,6 +17,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.merqueloapp.ui.components.AppBottomBar
@@ -45,16 +47,35 @@ fun StoresScreen(
             ) {
                 Text("Agrega tus tiendas favoritas")
                 Spacer(modifier = Modifier.height(16.dp))
-                val (text, setText) = remember { mutableStateOf("") }
+                var text by remember { mutableStateOf("") }
+                var stores by remember { mutableStateOf(listOf<String>()) }
                 OutlinedTextField(
                     value = text,
-                    onValueChange = setText,
-                    modifier = Modifier,
+                    onValueChange = { text = it },
+                    modifier = Modifier.fillMaxWidth(0.95f),
                     placeholder = { Text("Nombre de la tienda") }
                 )
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Lista de tiendas agregadas
+                stores.forEach { store ->
+                    Text(
+                        text = store,
+                        modifier = Modifier
+                            .fillMaxWidth(0.95f)
+                            .padding(vertical = 4.dp),
+                        fontSize = 18.sp
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
                 Button(
-                    onClick = { /* TODO: Acción de guardar */ },
+                    onClick = {
+                        if (text.isNotBlank()) {
+                            stores = stores + text
+                            text = ""
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MerkeloRed,
                         contentColor = White100
