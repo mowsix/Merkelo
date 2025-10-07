@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -29,6 +30,7 @@ fun HomeScreen(
     vm: HomeViewModel = viewModel()
 ) {
     val lists by vm.lists.collectAsState()
+    val lastFive = remember(lists) { lists.take(5) }   // 👈 limitar a 5 ya ordenadas por DESC
 
     Scaffold(
         topBar = { AppTopBar(title = "Inicio") },
@@ -54,47 +56,49 @@ fun HomeScreen(
             item { Spacer(Modifier.height(12.dp)) }
             item {
                 Text(
-                    text = "Tus mercados",
+                    text = "Tus mercados recientes",
                     style = MaterialTheme.typography.headlineMedium,
                     fontSize = 28.sp
                 )
             }
-            items(lists) { list ->
+            items(lastFive) { list ->
                 ElevatedCard(
-                    // 1. Definir los colores para la tarjeta
                     colors = CardDefaults.elevatedCardColors(
-                        // Fondo de la tarjeta (rojo)
-                        containerColor = MerkeloRed,
-                        // Color por defecto del contenido (texto/iconos) (blanco)
-                        contentColor = Color.White),
+                        containerColor = com.merqueloapp.ui.theme.MerkeloRed,
+                        contentColor = Color.White
+                    ),
                     onClick = { onOpenList(list.id) },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(vertical = 10.dp)
-
+                        .padding(vertical = 12.dp)
+                        .heightIn(min = 110.dp) // 👈 más alta
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 24.dp),
+                            .padding(vertical = 28.dp), // 👈 más padding interno
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
                             color = Color.White,
                             text = list.name,
                             style = MaterialTheme.typography.titleLarge,
-                            fontSize = 28.sp,
-
+                            fontSize = 30.sp,          // 👈 más grande
+                            fontWeight = FontWeight.SemiBold
                         )
                     }
                 }
             }
-            if (lists.isEmpty()) {
+            if (lastFive.isEmpty()) {
                 item { Spacer(Modifier.height(20.dp)) }
-                item { Text("Aún no tienes listas. ¡Crea la primera!", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                item {
+                    Text(
+                        "Aún no tienes listas. ¡Crea la primera!",
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
             item { Spacer(Modifier.height(80.dp)) }
         }
     }
 }
-
