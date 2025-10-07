@@ -11,6 +11,7 @@ interface MarketListDao {
     @Query("SELECT * FROM market_lists ORDER BY createdAt DESC")
     fun observeLists(): kotlinx.coroutines.flow.Flow<List<MarketListEntity>>
 
+
     @Query("SELECT * FROM market_lists WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): MarketListEntity
 
