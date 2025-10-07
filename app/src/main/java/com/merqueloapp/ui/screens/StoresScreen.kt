@@ -8,6 +8,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -17,6 +21,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.merqueloapp.ui.components.AppBottomBar
 import com.merqueloapp.ui.components.AppTopBar
+import com.merqueloapp.ui.theme.MerkeloRed
+import com.merqueloapp.ui.theme.White100
 
 @Composable
 fun StoresScreen(
@@ -46,6 +52,21 @@ fun StoresScreen(
                     modifier = Modifier,
                     placeholder = { Text("Nombre de la tienda") }
                 )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = { /* TODO: Acción de guardar */ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MerkeloRed,
+                        contentColor = White100
+                    ),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(50),
+                    modifier = Modifier
+                        .height(56.dp)
+                        .fillMaxWidth(0.85f)
+                        .padding(horizontal = 0.dp)
+                ) {
+                    Text("Guardar", color = White100, fontSize = 18.sp)
+                }
                 // Contenido futuro de Tiendas
             }
         }
