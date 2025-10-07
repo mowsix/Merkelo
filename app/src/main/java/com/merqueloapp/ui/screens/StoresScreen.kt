@@ -67,6 +67,21 @@ fun StoresScreen(
                 ) {
                     Text("Guardar", color = White100, fontSize = 18.sp)
                 }
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = { /* TODO: Acción de visualizar en el mapa */ },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MerkeloRed,
+                        contentColor = White100
+                    ),
+                    shape = androidx.compose.foundation.shape.RoundedCornerShape(50),
+                    modifier = Modifier
+                        .height(56.dp)
+                        .fillMaxWidth(0.85f)
+                        .padding(horizontal = 0.dp)
+                ) {
+                    Text("Visualizar en el mapa", color = White100, fontSize = 18.sp)
+                }
                 // Contenido futuro de Tiendas
             }
         }
