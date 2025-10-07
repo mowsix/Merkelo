@@ -1,5 +1,6 @@
 package com.merqueloapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -9,12 +10,15 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.merqueloapp.navigation.Routes
 import com.merqueloapp.ui.components.AppBottomBar
 import com.merqueloapp.ui.components.AppTopBar
+import com.merqueloapp.ui.theme.MerkeloDarkRed
+import com.merqueloapp.ui.theme.MerkeloRed
 
 @Composable
 fun HomeScreen(
@@ -57,10 +61,17 @@ fun HomeScreen(
             }
             items(lists) { list ->
                 ElevatedCard(
+                    // 1. Definir los colores para la tarjeta
+                    colors = CardDefaults.elevatedCardColors(
+                        // Fondo de la tarjeta (rojo)
+                        containerColor = MerkeloRed,
+                        // Color por defecto del contenido (texto/iconos) (blanco)
+                        contentColor = Color.White),
                     onClick = { onOpenList(list.id) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 10.dp)
+
                 ) {
                     Box(
                         modifier = Modifier
@@ -69,9 +80,11 @@ fun HomeScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
+                            color = Color.White,
                             text = list.name,
                             style = MaterialTheme.typography.titleLarge,
-                            fontSize = 22.sp
+                            fontSize = 28.sp,
+
                         )
                     }
                 }
