@@ -28,9 +28,13 @@ import com.merqueloapp.data.local.MarketListEntity
 fun AddProductScreen(
     currentRoute: String,
     onSelectTab: (String) -> Unit,
+    preselectListId: Long? = null,
     vm: AddProductViewModel = viewModel()
 ) {
     LaunchedEffect(Unit) { vm.loadInitial() }
+    LaunchedEffect(preselectListId) {
+        preselectListId?.let { vm.preselectListById(it) } // 👈 preseleccionar
+    }
 
     val lists by vm.lists.collectAsState()
     val selectedList by vm.selectedList.collectAsState()
@@ -278,6 +282,8 @@ private fun ListPickerDialog(
     )
 }
 
+
+
 /* -------------  Diálogo: tienda única (input + sugerencias) ------------- */
 @Composable
 private fun StorePickerSingleDialog(
@@ -426,3 +432,4 @@ private fun ProductPickerCommitDialog(
         }
     )
 }
+

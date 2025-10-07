@@ -68,4 +68,13 @@ class AddProductViewModel(app: Application) : AndroidViewModel(app) {
             onSaved()
         }
     }
+
+    fun preselectListById(listId: Long) {
+        viewModelScope.launch {
+            if (_lists.value.isEmpty()) {
+                _lists.value = repo.getLists()
+            }
+            _lists.value.firstOrNull { it.id == listId }?.let { selectList(it) }
+        }
+    }
 }
