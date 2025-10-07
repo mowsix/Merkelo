@@ -50,8 +50,8 @@ fun ProfileScreen(
                 // Encabezado
                 item {
                     Text(
-                        text = "MERKELO",
-                        color = MerkeloDarkRed,
+                        text = "Historial de listas",
+                        color = Color.Black,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp
                     )
@@ -59,7 +59,7 @@ fun ProfileScreen(
                 }
 
                 // Historial de listas (todas)
-                item { SectionTitle("Historial de listas") }
+                item { SectionTitle("Todas las listas que has creado") }
 
                 items(allLists) { lista ->
                     ProfileCard(
@@ -71,7 +71,7 @@ fun ProfileScreen(
                 item { Spacer(Modifier.height(24.dp)) }
 
                 // Historial de supermercados (TODO)
-                item { SectionTitle("Historial de supermercados") }
+                item { SectionTitle("Todas tus tiendas favoritas") }
                 item {
                     Text(
                         text = "TODO: Mostrar tiendas frecuentes/recientes",
@@ -105,8 +105,8 @@ private fun ProfileCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 6.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFD9D9D9)),
-        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = MerkeloRed),
+        shape = RoundedCornerShape(10.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Row(
@@ -118,14 +118,14 @@ private fun ProfileCard(
         ) {
             Text(
                 text = title,
-                color = Color.Black,
-                fontSize = 16.sp
+                color = Color.White,
+                fontSize = 22.sp
             )
             IconButton(onClick = onEditClick) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Editar",
-                    tint = MerkeloRed
+                    tint = Color.White
                 )
             }
         }
