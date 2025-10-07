@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,9 +59,21 @@ fun HomeScreen(
                 Text(
                     text = "Tus mercados recientes",
                     style = MaterialTheme.typography.headlineMedium,
-                    fontSize = 28.sp
+                    fontSize = 28.sp,
+                    textAlign= TextAlign.Center
+
+                )}
+                item { Spacer(Modifier.height(20.dp)) }
+            item{
+                Text(
+                    text = "Para ver todas tus listas o editarlas navega a tu perfil",
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontSize = 20.sp,
+                    textAlign= TextAlign.Center
                 )
+
             }
+            item { Spacer(Modifier.height(20.dp)) }
             items(lastFive) { list ->
                 ElevatedCard(
                     colors = CardDefaults.elevatedCardColors(
@@ -71,7 +84,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 12.dp)
-                        .heightIn(min = 110.dp) // 👈 más alta
+                        .heightIn(min = 70.dp) // 👈 más alta
                 ) {
                     Box(
                         modifier = Modifier
