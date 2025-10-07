@@ -21,6 +21,7 @@ import com.merqueloapp.ui.screens.MarketScreen
 import com.merqueloapp.ui.screens.ProfileScreen
 import com.merqueloapp.ui.screens.SplashScreen
 import com.merqueloapp.ui.screens.StoresScreen
+import com.merqueloapp.ui.screens.MapScreen
 
 @Composable
 fun AppNavigation() {
@@ -33,6 +34,12 @@ fun AppNavigation() {
             navController = nav,
             startDestination = Routes.SPLASH
         ) {
+            composable(Routes.MAP) {
+                MapScreen(
+                    currentRoute = Routes.MAP,
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                )
+            }
             composable(Routes.SPLASH) {
                 SplashScreen(
                     goToHome = {

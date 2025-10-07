@@ -33,6 +33,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.navigation.compose.rememberNavController
 import androidx.compose.ui.Alignment
 import com.merqueloapp.ui.components.AppBottomBar
 import com.merqueloapp.ui.components.AppTopBar
@@ -45,6 +46,7 @@ fun StoresScreen(
     currentRoute: String,
     onSelectTab: (String) -> Unit
 ) {
+    val navController = rememberNavController()
     Scaffold(
         topBar = { AppTopBar(title = "Tiendas") },
         bottomBar = { AppBottomBar(currentRoute = currentRoute, onSelect = onSelectTab) }
@@ -134,7 +136,9 @@ fun StoresScreen(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 Button(
-                    onClick = { /* TODO: Acción de visualizar en el mapa */ },
+                    onClick = {
+                        onSelectTab(com.merqueloapp.navigation.Routes.MAP)
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MerkeloRed,
                         contentColor = White100

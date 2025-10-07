@@ -12,6 +12,9 @@ object Routes {
     // Detalle de lista por ID
     const val LIST_DETAIL = "list_detail/{listId}"
     fun listDetailRoute(listId: Long) = "list_detail/$listId"
+
+    // Ruta para el mapa
+    const val MAP = "map"
 }
 
 object SplashConfig {
