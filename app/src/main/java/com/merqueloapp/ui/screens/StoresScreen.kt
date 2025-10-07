@@ -14,7 +14,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.ui.graphics.Color
+// ...existing code...
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -34,6 +34,7 @@ import com.merqueloapp.ui.components.AppBottomBar
 import com.merqueloapp.ui.components.AppTopBar
 import com.merqueloapp.ui.theme.MerkeloRed
 import com.merqueloapp.ui.theme.White100
+import androidx.compose.ui.graphics.Color
 
 @Composable
 fun StoresScreen(
@@ -105,8 +106,9 @@ fun StoresScreen(
                             text = ""
                         }
                     },
+                    enabled = text.isNotBlank(),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MerkeloRed,
+                        containerColor = if (text.isNotBlank()) MerkeloRed else Color(0xFFD3D3D3),
                         contentColor = White100
                     ),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(50),
