@@ -1,9 +1,15 @@
 package com.merqueloapp.ui.screens
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.border
+import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.OutlinedTextField
@@ -14,7 +20,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-// ...existing code...
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,7 +34,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-// ...existing code...
 import com.merqueloapp.ui.components.AppBottomBar
 import com.merqueloapp.ui.components.AppTopBar
 import com.merqueloapp.ui.theme.MerkeloRed
@@ -47,18 +51,17 @@ fun StoresScreen(
     ) { inner ->
         Box(
             modifier = Modifier.fillMaxSize().padding(inner),
-            contentAlignment = Alignment.TopCenter
         ) {
+            var text by remember { mutableStateOf("") }
+            var stores by remember { mutableStateOf(listOf<String>()) }
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 32.dp)
+                    .padding(top = 32.dp, bottom = 0.dp)
             ) {
                 Text("Agrega tus tiendas favoritas")
                 Spacer(modifier = Modifier.height(16.dp))
-                var text by remember { mutableStateOf("") }
-                var stores by remember { mutableStateOf(listOf<String>()) }
                 OutlinedTextField(
                     value = text,
                     onValueChange = { text = it },
@@ -66,38 +69,48 @@ fun StoresScreen(
                     placeholder = { Text("Nombre de la tienda") }
                 )
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // Lista de tiendas agregadas
-                stores.forEach { store ->
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(0.95f)
-                            .padding(vertical = 4.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = store,
-                            fontSize = 18.sp
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(0.95f)
+                        .weight(1f)
+                        .border(
+                            width = 1.dp,
+                            brush = SolidColor(Color.LightGray),
+                            shape = androidx.compose.foundation.shape.RoundedCornerShape(8.dp)
                         )
-                        OutlinedButton(
-                            onClick = { /* TODO: Acción del botón + */ },
-                            shape = androidx.compose.foundation.shape.CircleShape,
-                            border = androidx.compose.material3.ButtonDefaults.outlinedButtonBorder,
-                            contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
-                            modifier = Modifier
-                                .size(36.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Agregar",
-                                tint = Color.Gray,
-                                modifier = Modifier.size(22.dp)
-                            )
+                        .verticalScroll(rememberScrollState())
+                ) {
+                    Column {
+                        stores.forEach { store ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp, vertical = 4.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = store,
+                                    fontSize = 18.sp
+                                )
+                                OutlinedButton(
+                                    onClick = { /* TODO: Acción del botón + */ },
+                                    shape = androidx.compose.foundation.shape.CircleShape,
+                                    border = androidx.compose.material3.ButtonDefaults.outlinedButtonBorder,
+                                    contentPadding = androidx.compose.foundation.layout.PaddingValues(0.dp),
+                                    modifier = Modifier.size(36.dp)
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Add,
+                                        contentDescription = "Agregar",
+                                        tint = Color.Gray,
+                                        modifier = Modifier.size(22.dp)
+                                    )
+                                }
+                            }
                         }
                     }
                 }
-
                 Spacer(modifier = Modifier.height(16.dp))
                 Button(
                     onClick = {
@@ -130,11 +143,10 @@ fun StoresScreen(
                     modifier = Modifier
                         .height(56.dp)
                         .fillMaxWidth(0.85f)
-                        .padding(horizontal = 0.dp)
+                        .padding(bottom = 16.dp)
                 ) {
                     Text("Visualizar en el mapa", color = White100, fontSize = 18.sp)
                 }
-                // Contenido futuro de Tiendas
             }
         }
     }
