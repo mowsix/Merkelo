@@ -12,7 +12,7 @@ object Routes {
     const val LIST_DETAIL = "list_detail/{listId}"
     fun listDetailRoute(listId: Long) = "list_detail/$listId"
 
-    // Add Product con listId opcional (query param)
+    // Add Product con listId (query param)
     private const val ADD_PRODUCT_BASE = "add_product"
     const val ADD_PRODUCT_ROUTE = "$ADD_PRODUCT_BASE?listId={listId}" // patrón para el NavHost
 

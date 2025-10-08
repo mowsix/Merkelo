@@ -128,10 +128,10 @@ fun ProfileScreen(
                         // feedback
                         scope.launch { snackbarHost.showSnackbar("Lista eliminada") }
                     }
-                }) { Text("Eliminar") }
+                }) { Text("Eliminar", color = MerkeloRed, fontSize = 18.sp) }
             },
             dismissButton = {
-                TextButton(onClick = { confirmDeleteList = null }) { Text("Cancelar") }
+                TextButton(onClick = { confirmDeleteList = null }) { Text("Cancelar", color = MerkeloRed, fontSize = 18.sp) }
             }
         )
     }
@@ -148,10 +148,10 @@ fun ProfileScreen(
                         confirmDeleteStore = null
                         scope.launch { snackbarHost.showSnackbar("Tienda eliminada de favoritos") }
                     }
-                }) { Text("Eliminar") }
+                }) { Text("Eliminar", color = MerkeloRed, fontSize = 18.sp) }
             },
             dismissButton = {
-                TextButton(onClick = { confirmDeleteStore = null }) { Text("Cancelar") }
+                TextButton(onClick = { confirmDeleteStore = null }) { Text("Cancelar", color = MerkeloRed, fontSize = 18.sp) }
             }
         )
     }

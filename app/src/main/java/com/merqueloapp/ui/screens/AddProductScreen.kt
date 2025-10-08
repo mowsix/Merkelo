@@ -151,7 +151,7 @@ fun AddProductScreen(
                 Spacer(Modifier.height(16.dp))
 
                 // Resumen (con altura propia y scroll si hace falta)
-                Text("Resumen", style = MaterialTheme.typography.titleMedium)
+                Text("Resumen", style = MaterialTheme.typography.titleMedium, fontSize = 20.sp)
                 LazyColumn(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -166,10 +166,10 @@ fun AddProductScreen(
                             )
                         }
                     } else {
-                        item { Text("Lista: ${selectedList!!.name}", fontWeight = FontWeight.Medium) }
-                        item { Text("Tienda: ${storeName ?: "-"}", fontWeight = FontWeight.Medium) }
+                        item { Text("Lista: ${selectedList!!.name}", fontWeight = FontWeight.Medium , fontSize = 20.sp) }
+                        item { Text("Tienda: ${storeName ?: "-"}", fontWeight = FontWeight.Medium, fontSize = 20.sp) }
                         items(products) { p ->
-                            Text("• ${p.name} x${p.quantity}", style = MaterialTheme.typography.bodyMedium)
+                            Text("• ${p.name} x${p.quantity}", style = MaterialTheme.typography.bodyMedium, fontSize =20.sp )
                         }
                     }
                 }
@@ -187,7 +187,7 @@ fun AddProductScreen(
                 enabled = canSave,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp)
+                    .padding(horizontal = 33.dp)
                     .height(56.dp),
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = MerkeloRed, contentColor = Color.White
@@ -255,7 +255,7 @@ private fun ListPickerDialog(
                 Text("Guardar", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = MerkeloRed)
             }
         },
-        dismissButton = { TextButton(onClick = onDismiss) { Text("Cerrar", color = MerkeloRed) } },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cerrar",fontSize = 18.sp, color = MerkeloRed) } },
         title = { Text("Selecciona una lista") },
         text = {
             Column {
