@@ -2,6 +2,10 @@ package com.merqueloapp.data.local
 
 import androidx.room.*
 
+/* =========================
+ * ENTITIES
+ * ========================= */
+
 @Entity(tableName = "market_lists")
 data class MarketListEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -51,4 +55,14 @@ data class ListItemEntity(
     val storeId: Long,
     val productName: String,
     val quantity: Int = 1
+)
+
+/* tabla de tiendas favoritas */
+@Entity(
+    tableName = "favorite_stores",
+    indices = [Index(value = ["name"], unique = true)]
+)
+data class FavoriteStoreEntity(
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo(name = "name") val name: String
 )

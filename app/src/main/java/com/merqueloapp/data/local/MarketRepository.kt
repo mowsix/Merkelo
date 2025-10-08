@@ -2,6 +2,7 @@ package com.merqueloapp.data
 
 import android.content.Context
 import com.merqueloapp.data.local.DbProvider
+import com.merqueloapp.data.local.FavoriteStoreEntity
 import com.merqueloapp.data.local.ListItemEntity
 import com.merqueloapp.data.local.ListStoreEntity
 import com.merqueloapp.data.local.MarketListEntity
@@ -11,7 +12,7 @@ class MarketRepository(context: Context) {
     private val listDao = db.marketListDao()
     private val storeDao = db.listStoreDao()
     private val itemDao = db.listItemDao()
-
+    private val favoriteDao = db.favoriteStoreDao()
     /* ---------------- Flujos / Lecturas ---------------- */
 
     /** Flujo en vivo de listas para la pantalla Home. */
@@ -104,6 +105,19 @@ class MarketRepository(context: Context) {
         return ListDetail(listId = list.id, listName = list.name, groups = groups)
     }
 
+    // ----- FAVORITAS -----
+    fun favoritesFlow() = favoriteDao.observeFavorites()
+    suspend fun favoriteStores(): List<String> = favoriteDao.getFavoriteNames()
+
+    suspend fun addFavoriteStore(name: String) {
+        favoriteDao.insert(FavoriteStoreEntity(name = name.toTitleCase()))
+    }
+    suspend fun removeFavoriteStore(name: String) {
+        favoriteDao.deleteByName(name.toTitleCase())
+    }
+
+
+
     // Modelos para la UI
     data class ListDetail(
         val listId: Long,
@@ -120,7 +134,16 @@ class MarketRepository(context: Context) {
     )
     /* ---------------- Sugerencias globales ---------------- */
 
-    suspend fun storeSuggestions(): List<String> = storeDao.getStoreSuggestions()
+
+    // ----- SUGERENCIAS DE TIENDAS (defaults + favoritas + usadas) -----
+    suspend fun storeSuggestions(): List<String> {
+        val defaults = listOf("D1", "Ara", "Euro", "Éxito", "Carulla", "La Vaquita")
+        val favs = favoriteStores()
+        val used = storeDao.getStoreSuggestions()
+        return (defaults + favs + used)
+            .distinctBy { it.lowercase() }
+            .sorted()
+    }
 
     suspend fun productSuggestions(): List<String> = itemDao.getProductSuggestions()
 }
