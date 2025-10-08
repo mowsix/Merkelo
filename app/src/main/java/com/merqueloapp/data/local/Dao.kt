@@ -20,6 +20,9 @@ interface MarketListDao {
 
     @Query("SELECT * FROM market_lists WHERE id = :id LIMIT 1")
     suspend fun getById(id: Long): MarketListEntity
+
+    @Query("DELETE FROM market_lists WHERE id = :id")
+    suspend fun deleteList(id: Long): Int
 }
 
 @Dao

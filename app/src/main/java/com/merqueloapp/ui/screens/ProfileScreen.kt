@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -21,6 +22,9 @@ import com.merqueloapp.ui.components.AppTopBar
 import com.merqueloapp.ui.theme.MerkeloDarkRed
 import com.merqueloapp.ui.theme.MerkeloRed
 import com.merqueloapp.ui.theme.White100
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
+
 
 @Composable
 fun ProfileScreen(
@@ -33,9 +37,17 @@ fun ProfileScreen(
     val allLists by vm.allLists.collectAsState()
     val favoriteStores by vm.favoriteStores.collectAsState()
 
+    val snackbarHost = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    // estados para confirmación
+    var confirmDeleteList by remember { mutableStateOf<Long?>(null) }
+    var confirmDeleteStore by remember { mutableStateOf<String?>(null) }
+
     Scaffold(
         topBar = { AppTopBar(title = "Perfil") },
-        bottomBar = { AppBottomBar(currentRoute = currentRoute, onSelect = onSelectTab) }
+        bottomBar = { AppBottomBar(currentRoute = currentRoute, onSelect = onSelectTab) },
+        snackbarHost = { SnackbarHost(snackbarHost) }
     ) { inner ->
         Box(
             modifier = Modifier
@@ -65,7 +77,8 @@ fun ProfileScreen(
                 items(allLists) { lista ->
                     ProfileCard(
                         title = lista.name,
-                        onEditClick = { onEditList(lista.id) }
+                        onEditClick = { onEditList(lista.id) },
+                        onDeleteClick = { confirmDeleteList = lista.id }
                     )
                 }
                 if (allLists.isEmpty()) {
@@ -93,12 +106,54 @@ fun ProfileScreen(
                     items(favoriteStores) { store ->
                         StoresCard(
                             title = store,
-                            onEditStore = { onEditStore(store) } // 👈 lápiz → navegar a Stores
+                            onEditStore = { onEditStore(store) },
+                            onDeleteStore = { confirmDeleteStore = store }
                         )
                     }
                 }
             }
         }
+    }
+
+    // Diálogo: confirmar borrar lista
+    confirmDeleteList?.let { listId ->
+        AlertDialog(
+            onDismissRequest = { confirmDeleteList = null },
+            title = { Text("Eliminar lista") },
+            text = { Text("¿Seguro que deseas eliminar esta lista por completo?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.deleteList(listId) {
+                        confirmDeleteList = null
+                        // feedback
+                        scope.launch { snackbarHost.showSnackbar("Lista eliminada") }
+                    }
+                }) { Text("Eliminar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDeleteList = null }) { Text("Cancelar") }
+            }
+        )
+    }
+
+    // Diálogo: confirmar borrar tienda favorita
+    confirmDeleteStore?.let { storeName ->
+        AlertDialog(
+            onDismissRequest = { confirmDeleteStore = null },
+            title = { Text("Eliminar tienda favorita") },
+            text = { Text("¿Quitar \"$storeName\" de tus tiendas favoritas?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    vm.deleteFavoriteStore(storeName) {
+                        confirmDeleteStore = null
+                        scope.launch { snackbarHost.showSnackbar("Tienda eliminada de favoritos") }
+                    }
+                }) { Text("Eliminar") }
+            },
+            dismissButton = {
+                TextButton(onClick = { confirmDeleteStore = null }) { Text("Cancelar") }
+            }
+        )
     }
 }
 
@@ -118,7 +173,8 @@ private fun SectionTitle(text: String) {
 @Composable
 private fun ProfileCard(
     title: String,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -132,18 +188,25 @@ private fun ProfileCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
                 color = Color.White,
-                fontSize = 22.sp
+                fontSize = 22.sp,
+                modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onEditClick) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Editar",
+                    tint = Color.White
+                )
+            }
+            IconButton(onClick = onDeleteClick) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar lista",
                     tint = Color.White
                 )
             }
@@ -154,7 +217,8 @@ private fun ProfileCard(
 @Composable
 private fun StoresCard(
     title: String,
-    onEditStore: () -> Unit
+    onEditStore: () -> Unit,
+    onDeleteStore: () -> Unit
 ) {
     Card(
         modifier = Modifier
@@ -168,18 +232,25 @@ private fun StoresCard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
                 color = Color.White,
-                fontSize = 22.sp
+                fontSize = 22.sp,
+                modifier = Modifier.weight(1f)
             )
             IconButton(onClick = onEditStore) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Editar tienda",
+                    tint = Color.White
+                )
+            }
+            IconButton(onClick = onDeleteStore) {
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar tienda favorita",
                     tint = Color.White
                 )
             }

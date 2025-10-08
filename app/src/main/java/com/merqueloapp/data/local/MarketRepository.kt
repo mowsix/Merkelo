@@ -95,10 +95,10 @@ class MarketRepository(context: Context) {
 
     // Devuelve la lista (nombre) + tiendas con sus items
     suspend fun getListDetail(listId: Long): ListDetail {
-        val list = listDao.getById(listId)              // 👈 requiere DAO getById
+        val list = listDao.getById(listId)
         val stores = storeDao.getStoresForList(listId)
         val groups = stores.map { st ->
-            val items = itemDao.getItemsForStore(st.id) // 👈 requiere DAO getItemsForStore
+            val items = itemDao.getItemsForStore(st.id)
                 .map { ProductEntry(it.productName, it.quantity) }
             StoreGroup(storeName = st.storeName, items = items)
         }
@@ -147,15 +147,24 @@ class MarketRepository(context: Context) {
 
     suspend fun productSuggestions(): List<String> = itemDao.getProductSuggestions()
 
-    // 🔽 Borrar tienda completa (items se borran por CASCADE)
+    //tienda completa (items se borran por CASCADE)
     suspend fun removeStoreFromList(listId: Long, storeName: String) {
         storeDao.deleteStoreByName(listId, storeName)
     }
 
-    // 🔽 Borrar un producto de una tienda
+    //un producto de una tienda
     suspend fun removeProductFromList(listId: Long, storeName: String, productName: String) {
         val store = storeDao.getStoreByName(listId, storeName) ?: return
         itemDao.deleteItemByName(listId, store.id, productName)
+    }
+
+    suspend fun deleteList(listId: Long) {
+        listDao.deleteList(listId)
+    }
+
+    // 👇 borrar tienda favorita
+    suspend fun deleteFavoriteStore(name: String) {
+        favoriteDao.deleteByName(name)
     }
 }
 
