@@ -24,7 +24,4 @@ object Routes {
 
 }
 
-object SplashConfig {
-    const val TIME_SPLASH_MS = 900L
-}
 

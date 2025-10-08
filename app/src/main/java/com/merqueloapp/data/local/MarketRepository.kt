@@ -146,7 +146,20 @@ class MarketRepository(context: Context) {
     }
 
     suspend fun productSuggestions(): List<String> = itemDao.getProductSuggestions()
+
+    // 🔽 Borrar tienda completa (items se borran por CASCADE)
+    suspend fun removeStoreFromList(listId: Long, storeName: String) {
+        storeDao.deleteStoreByName(listId, storeName)
+    }
+
+    // 🔽 Borrar un producto de una tienda
+    suspend fun removeProductFromList(listId: Long, storeName: String, productName: String) {
+        val store = storeDao.getStoreByName(listId, storeName) ?: return
+        itemDao.deleteItemByName(listId, store.id, productName)
+    }
 }
+
+
 
 /* ---------------- Utils ---------------- */
 
