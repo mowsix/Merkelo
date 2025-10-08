@@ -26,10 +26,12 @@ import com.merqueloapp.ui.theme.White100
 fun ProfileScreen(
     currentRoute: String,
     onSelectTab: (String) -> Unit,
-    onEditList: (Long) -> Unit,                  // <-- callback para ir a AddProduct con esa lista
+    onEditList: (Long) -> Unit,
+    onEditStore: (String) -> Unit,
     vm: ProfileViewModel = viewModel()
 ) {
     val allLists by vm.allLists.collectAsState()
+    val favoriteStores by vm.favoriteStores.collectAsState()
 
     Scaffold(
         topBar = { AppTopBar(title = "Perfil") },
@@ -58,32 +60,49 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(20.dp))
                 }
 
-                // Historial de listas (todas)
+                // Listas creadas
                 item { SectionTitle("Todas las listas que has creado") }
-
                 items(allLists) { lista ->
                     ProfileCard(
                         title = lista.name,
-                        onEditClick = { onEditList(lista.id) }   // lápiz → AddProduct con listId
+                        onEditClick = { onEditList(lista.id) }
                     )
+                }
+                if (allLists.isEmpty()) {
+                    item {
+                        Text(
+                            text = "Aún no has creado listas.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
 
                 item { Spacer(Modifier.height(24.dp)) }
 
-                // Historial de supermercados (TODO)
+                // Favoritas
                 item { SectionTitle("Todas tus tiendas favoritas") }
-                item {
-                    Text(
-                        text = "TODO: Mostrar tiendas frecuentes/recientes",
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+
+                if (favoriteStores.isEmpty()) {
+                    item {
+                        Text(
+                            text = "Aún no tienes tiendas favoritas. Ve a la pestaña Tiendas para agregarlas.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                } else {
+                    items(favoriteStores) { store ->
+                        StoresCard(
+                            title = store,
+                            onEditStore = { onEditStore(store) } // 👈 lápiz → navegar a Stores
+                        )
+                    }
                 }
             }
         }
     }
 }
 
-/* ---------- UI helpers en el mismo archivo para evitar "Unresolved reference" ---------- */
+/* ---------- UI helpers ---------- */
 
 @Composable
 private fun SectionTitle(text: String) {
@@ -125,6 +144,42 @@ private fun ProfileCard(
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Editar",
+                    tint = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun StoresCard(
+    title: String,
+    onEditStore: () -> Unit
+) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 6.dp),
+        colors = CardDefaults.cardColors(containerColor = MerkeloRed),
+        shape = RoundedCornerShape(10.dp),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = title,
+                color = Color.White,
+                fontSize = 22.sp
+            )
+            IconButton(onClick = onEditStore) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Editar tienda",
                     tint = Color.White
                 )
             }

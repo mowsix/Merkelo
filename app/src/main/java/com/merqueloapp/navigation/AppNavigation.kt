@@ -74,7 +74,7 @@ fun AppNavigation() {
                 )
             }
 
-            // Stores (placeholder)
+            // Stores
             composable(Routes.STORES) {
                 StoresScreen(
                     currentRoute = currentRoute,
@@ -82,27 +82,31 @@ fun AppNavigation() {
                 )
             }
 
-            // Profile -> lápiz navega a AddProduct con listId preseleccionado
+            // Profile
             composable(Routes.PROFILE) {
                 ProfileScreen(
                     currentRoute = currentRoute,
                     onSelectTab = { route -> navigateSingleTopTo(route, nav) },
                     onEditList = { listId: Long ->
                         nav.navigate(Routes.addProductRoute(listId))
+                    },
+                    // 👇 aquí cableamos el lápiz de tienda → Stores
+                    onEditStore = { /* storeName: String -> */
+                        navigateSingleTopTo(Routes.STORES, nav)
                     }
                 )
             }
 
-            // Add Product con listId opcional (?listId=)
+            // Add Product (?listId= opcional)
             composable(
-                route = Routes.ADD_PRODUCT_ROUTE,            // e.g. "add_product?listId={listId}"
+                route = Routes.ADD_PRODUCT_ROUTE, // p.ej. "add_product?listId={listId}"
                 arguments = listOf(
                     navArgument("listId") {
                         type = NavType.LongType
                         defaultValue = -1L
                     }
                 )
-            ) { backStack: NavBackStackEntry ->             // 👈 tipo explícito
+            ) { backStack: NavBackStackEntry ->
                 val preId = backStack.arguments?.getLong("listId") ?: -1L
                 val preselect = preId.takeIf { it != -1L }
 
@@ -113,11 +117,11 @@ fun AppNavigation() {
                 )
             }
 
-            // Detalle de lista por ID (segment param)
+            // Detalle de lista
             composable(
-                route = Routes.LIST_DETAIL,                  // "list_detail/{listId}"
+                route = Routes.LIST_DETAIL, // "list_detail/{listId}"
                 arguments = listOf(navArgument("listId") { type = NavType.LongType })
-            ) { backStack: NavBackStackEntry ->             // 👈 tipo explícito
+            ) { backStack: NavBackStackEntry ->
                 val listId = backStack.arguments?.getLong("listId") ?: 0L
                 ListDetailScreen(
                     listId = listId,
