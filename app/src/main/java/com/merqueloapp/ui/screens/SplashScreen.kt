@@ -32,7 +32,7 @@ fun SplashScreen(
     // animaciones en secuencia
     LaunchedEffect(Unit) {
         repeat(3) {
-            delay(700)
+            delay(500)
             contador++
         }
         goToHome.invoke()

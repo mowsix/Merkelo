@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -30,13 +31,12 @@ fun CreateListScreen(
     var showStores by remember { mutableStateOf(false) }
     var showProductsForStore by remember { mutableStateOf<String?>(null) }
 
-    // Estados del VM
+    // VM state
     val name by vm.listName.collectAsState()
     val stores by vm.stores.collectAsState()
     val storeSuggestions by vm.storeSuggestions.collectAsState()
     val productSuggestions by vm.productSuggestions.collectAsState()
 
-    // Validaciones
     val hasAtLeastOneProduct = stores.any { it.products.isNotEmpty() }
     val canSave = name.isNotBlank() && stores.isNotEmpty() && hasAtLeastOneProduct
 
@@ -74,79 +74,86 @@ fun CreateListScreen(
 
             Spacer(Modifier.height(20.dp))
 
-            // Tienda (selección única)
+            // Agregar tienda (una por vez) -> abre diálogo y luego productos de esa tienda
             ElevatedButton(
                 onClick = { showStores = true },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp)
+                    .padding(horizontal = 32.dp),
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = MerkeloRed,
                     contentColor = Color.White
                 )
             ) {
-                Text("Selecciona o escribe tu tienda", fontWeight = FontWeight.Medium, fontSize = 18.sp)
+                Text("Agregar tienda", fontWeight = FontWeight.Medium, fontSize = 18.sp)
             }
             if (stores.isEmpty()) {
-                Text("Agrega una tienda.", color = MaterialTheme.colorScheme.error)
-            }
-
-            Spacer(Modifier.height(20.dp))
-
-            // Productos (por la tienda seleccionada)
-            if (stores.isNotEmpty()) {
-                ElevatedButton(
-                    onClick = { showProductsForStore = stores.first().name },
-                    modifier = Modifier.fillMaxWidth().height(56.dp),
-                    colors = ButtonDefaults.elevatedButtonColors(
-                        containerColor = MerkeloRed,
-                        contentColor = Color.White
-                    )
-                ) {
-                    Text("Selecciona o escribe tus Productos", fontWeight = FontWeight.Medium, fontSize = 18.sp)
-                }
-                if (!hasAtLeastOneProduct) {
-                    Text("Agrega al menos un producto.", color = MaterialTheme.colorScheme.error)
-                }
+                Text("Agrega al menos una tienda.", color = MaterialTheme.colorScheme.error)
             }
 
             Spacer(Modifier.height(24.dp))
 
-            // Resumen SIEMPRE visible
+            // Resumen SIEMPRE visible (con opción de editar productos por tienda)
             Text(
-                fontWeight = FontWeight.Medium,
+                text = "Resumen",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
                 fontSize = 18.sp,
-                text = "Resumen", style = MaterialTheme.typography.titleMedium)
+                fontWeight = FontWeight.Medium
+            )
+            Spacer(Modifier.height(8.dp))
+
             LazyColumn(
-                modifier = Modifier.fillMaxWidth().weight(1f),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
                 contentPadding = PaddingValues(vertical = 8.dp)
             ) {
                 if (stores.isEmpty()) {
-                    item { Text("Sin tiendas ni productos aún.", color = MaterialTheme.colorScheme.onSurfaceVariant) }
+                    item {
+                        Text(
+                            "Sin tiendas ni productos aún.",
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 } else {
                     items(stores) { st ->
-                        Text(
-                            text = "Tienda: ${st.name}",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 18.sp,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                        st.products.forEach { p ->
+                        // Cabecera de tienda con botón editar
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
+                                text = "Tienda: ${st.name}",
+                                style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 18.sp,
-                                text = "• ${p.name} x${p.quantity}", style = MaterialTheme.typography.bodyMedium)
+                                modifier = Modifier.weight(1f)
+                            )
+                            TextButton(
+                                onClick = { showProductsForStore = st.name }
+                            ) { Text("Editar", color = MerkeloRed) }
+                        }
+                        // Productos
+                        if (st.products.isEmpty()) {
+                            Text("• (Sin productos)", color = MaterialTheme.colorScheme.onSurfaceVariant)
+                        } else {
+                            st.products.forEach { p ->
+                                Text("• ${p.name} x${p.quantity}", style = MaterialTheme.typography.bodyMedium)
+                            }
                         }
                         Spacer(Modifier.height(12.dp))
                     }
                 }
             }
 
-            // Finalizar / Guardar definitiva
+            // Guardar definitiva
             Button(
                 onClick = {
                     if (!canSave) {
                         scope.launch {
-                            snackbarHost.showSnackbar("Completa nombre, tienda y al menos un producto.")
+                            snackbarHost.showSnackbar("Completa nombre, tiendas y al menos un producto.")
                         }
                     } else {
                         vm.save {
@@ -155,7 +162,9 @@ fun CreateListScreen(
                     }
                 },
                 enabled = canSave,
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 colors = ButtonDefaults.elevatedButtonColors(
                     containerColor = MerkeloRed,
                     contentColor = Color.White
@@ -169,72 +178,65 @@ fun CreateListScreen(
 
     // D I Á L O G O S
 
-    // Tiendas (selección única con commit en Guardar)
+    // Elegir o escribir UNA tienda por vez; no sobreescribe: agrega y abre productos de esa tienda
     if (showStores) {
-        StorePickerDialog(
-            currentStore = stores.firstOrNull()?.name,
+        StorePickerSingleDialog(
+            title = "Selecciona o escribe tu tienda",
+            current = null,
             suggestions = storeSuggestions,
             onDismiss = { showStores = false },
-            onCommitStore = { selectedOrTyped ->
-                vm.setSingleStore(selectedOrTyped)
+            onCommit = { typedOrSelected ->
+                val normalized = vm.addStore(typedOrSelected)  // 👈 agrega si no estaba
                 showStores = false
-                // opcional: abrir de una vez productos
-                // showProductsForStore = selectedOrTyped
+                showProductsForStore = normalized               // 👈 abre productos de ESTA tienda
             }
         )
     }
 
-    // Productos: commit en Guardar
+    // Productos de una tienda (commit reemplaza el set de productos de esa tienda)
     showProductsForStore?.let { storeName ->
-        val selectedProducts = stores.find { it.name == storeName }?.products ?: emptyList()
-        ProductPickerDialog(
+        val productsForStore = stores.find { it.name.equals(storeName, true) }?.products ?: emptyList()
+        ProductPickerCommitDialog(
             storeName = storeName,
-            initial = selectedProducts,
+            initial = productsForStore,
             suggestions = productSuggestions,
             onDismiss = { showProductsForStore = null },
-            onCommit = { finalProducts ->
-                vm.setProductsForStore(storeName, finalProducts)
+            onCommit = { chosen ->
+                vm.setProductsForStore(storeName, chosen)
                 showProductsForStore = null
             }
         )
     }
 }
 
-/* --------------------  Diálogo: Seleccionar UNA tienda  -------------------- */
+/* ---------- Diálogo: tienda única (input + sugerencias, con radio) ---------- */
 @Composable
-private fun StorePickerDialog(
-    currentStore: String?,
+private fun StorePickerSingleDialog(
+    title: String,
+    current: String?,
     suggestions: List<String>,
     onDismiss: () -> Unit,
-    onCommitStore: (String) -> Unit
+    onCommit: (String) -> Unit
 ) {
     var input by remember { mutableStateOf(TextFieldValue("")) }
-    var selected by remember { mutableStateOf(currentStore) } // estado local para feedback inmediato
+    var selected by remember { mutableStateOf(current) }
 
     AlertDialog(
         onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
-                val typed = input.text.trim()
-                val final = if (typed.isNotEmpty()) typed else selected
-                if (!final.isNullOrBlank()) onCommitStore(final)
-                else onDismiss()
-            }) {
-                Text("Guardar", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = MerkeloRed)
-            }
+                val final = input.text.trim().ifEmpty { selected ?: "" }
+                if (final.isNotBlank()) onCommit(final) else onDismiss()
+            }) { Text("Guardar", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = MerkeloRed) }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cerrar", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = MerkeloRed)
-            }
-        },
-        title = { Text("Selecciona o escribe tu tienda") },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cerrar", color = MerkeloRed) } },
+        title = { Text(title) },
         text = {
             Column {
                 OutlinedTextField(
                     value = input,
                     onValueChange = { input = it },
-                    placeholder = { Text("Ej: La Vaquita") },
+                    placeholder = { Text("Escribe una tienda") },
                     singleLine = true,
                     trailingIcon = {
                         if (input.text.isNotEmpty()) TextButton({ input = TextFieldValue("") }) { Text("X") }
@@ -245,17 +247,12 @@ private fun StorePickerDialog(
                 Text("Sugerencias", fontWeight = FontWeight.Medium, fontSize = 18.sp)
                 Spacer(Modifier.height(8.dp))
                 suggestions.forEach { s ->
-                    val checked = selected?.equals(s, ignoreCase = true) == true
+                    val checked = selected?.equals(s, true) == true
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(
-                            checked = checked,
-                            onCheckedChange = { isChecked ->
-                                selected = if (isChecked) s else null
-                            },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = MerkeloRed,
-                                checkmarkColor = Color.White
-                            )
+                        RadioButton(
+                            selected = checked,
+                            onClick = { selected = s },
+                            colors = RadioButtonDefaults.colors(selectedColor = MerkeloRed)
                         )
                         Text(s)
                     }
@@ -265,9 +262,9 @@ private fun StorePickerDialog(
     )
 }
 
-/* --------------------  Diálogo: Productos (lista local + commit)  -------------------- */
+/* ---------- Diálogo: productos (lista local + commit) ---------- */
 @Composable
-private fun ProductPickerDialog(
+private fun ProductPickerCommitDialog(
     storeName: String,
     initial: List<ProductSelection>,
     suggestions: List<String>,
@@ -276,14 +273,11 @@ private fun ProductPickerDialog(
 ) {
     var input by remember { mutableStateOf(TextFieldValue("")) }
     var qty by remember { mutableStateOf("1") }
-
-    // lista local editable para feedback inmediato
     val local = remember(initial) { initial.map { it.copy() }.toMutableStateList() }
 
     fun toggleSuggestion(name: String) {
         val idx = local.indexOfFirst { it.name.equals(name, true) }
-        if (idx >= 0) local.removeAt(idx)
-        else local.add(ProductSelection(name, 1))
+        if (idx >= 0) local.removeAt(idx) else local.add(ProductSelection(name, 1))
     }
 
     AlertDialog(
@@ -293,23 +287,16 @@ private fun ProductPickerDialog(
                 Text("Guardar", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = MerkeloRed)
             }
         },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text("Cerrar", fontWeight = FontWeight.Medium, fontSize = 18.sp, color = MerkeloRed)
-            }
-        },
+        dismissButton = { TextButton(onClick = onDismiss) { Text("Cerrar", color = MerkeloRed) } },
         title = { Text("Productos de $storeName") },
         text = {
             Column {
-                // Escribir producto y cantidad + botón Añadir
                 OutlinedTextField(
                     value = input,
                     onValueChange = { input = it },
                     placeholder = { Text("Escribe un producto") },
                     singleLine = true,
-                    trailingIcon = {
-                        if (input.text.isNotEmpty()) TextButton({ input = TextFieldValue("") }) { Text("X") }
-                    },
+                    trailingIcon = { if (input.text.isNotEmpty()) TextButton({ input = TextFieldValue("") }) { Text("X") } },
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(Modifier.height(8.dp))
@@ -343,10 +330,7 @@ private fun ProductPickerDialog(
                         Checkbox(
                             checked = checked,
                             onCheckedChange = { toggleSuggestion(s) },
-                            colors = CheckboxDefaults.colors(
-                                checkedColor = MerkeloRed,
-                                checkmarkColor = Color.White
-                            )
+                            colors = CheckboxDefaults.colors(checkedColor = MerkeloRed, checkmarkColor = Color.White)
                         )
                         Text(s)
                     }

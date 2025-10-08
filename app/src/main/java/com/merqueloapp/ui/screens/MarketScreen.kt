@@ -64,7 +64,8 @@ fun MarketScreen(
                 text = "Crear nuevo",
                 onClick = onCreateNew,
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
-                backgroundColor = MerkeloRed
+                backgroundColor = MerkeloRed,
+                contentColor = Color.White
             )
 
             Spacer(Modifier.height(60.dp))
@@ -88,7 +89,8 @@ fun MarketScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp),
-                backgroundColor = MerkeloRed
+                backgroundColor = MerkeloRed,
+                contentColor = Color.White
             )
 
             Spacer(Modifier.height(24.dp))
@@ -108,7 +110,7 @@ private fun RoundedBigButton(
         onClick = onClick,
         shape = MaterialTheme.shapes.extraLarge,
         modifier = modifier
-            .height(56.dp),
+            .height(56.dp).padding(horizontal = 38.dp),
         elevation = ButtonDefaults.elevatedButtonElevation(defaultElevation = 4.dp),
         colors = ButtonDefaults.elevatedButtonColors(
             containerColor = backgroundColor,
