@@ -7,6 +7,7 @@ object Routes {
     const val STORES = "stores"
     const val PROFILE = "profile"
     const val CREATE_LIST = "create_list"
+    const val MAP = "map"
 
     // Detalle de lista por ID (segment param)
     const val LIST_DETAIL = "list_detail/{listId}"

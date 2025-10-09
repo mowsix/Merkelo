@@ -27,7 +27,8 @@ import com.merqueloapp.ui.theme.White100
 fun StoresScreen(
     currentRoute: String,
     onSelectTab: (String) -> Unit,
-    vm: StoresViewModel = viewModel()
+    vm: StoresViewModel = viewModel(),
+    onViewMap: () -> Unit
 ) {
     var input by remember { mutableStateOf("") }
     val favorites by vm.favorites.collectAsState()        // nombres desde Room
@@ -149,7 +150,7 @@ fun StoresScreen(
 
             // (Opcional) Mapa: pendiente implementar
             OutlinedButton(
-                onClick = { /* TODO: Visualizar favoritas en el mapa */ },
+                onClick = { onViewMap.invoke() },
                 modifier = Modifier
                     .height(56.dp)
                     .fillMaxWidth(0.85f)

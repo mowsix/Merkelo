@@ -18,6 +18,7 @@ import com.merqueloapp.ui.screens.AddProductScreen
 import com.merqueloapp.ui.screens.CreateListScreen
 import com.merqueloapp.ui.screens.HomeScreen
 import com.merqueloapp.ui.screens.ListDetailScreen
+import com.merqueloapp.ui.screens.MapScreenOSM
 import com.merqueloapp.ui.screens.MarketScreen
 import com.merqueloapp.ui.screens.ProfileScreen
 import com.merqueloapp.ui.screens.SplashScreen
@@ -78,7 +79,10 @@ fun AppNavigation() {
             composable(Routes.STORES) {
                 StoresScreen(
                     currentRoute = currentRoute,
-                    onSelectTab = { route -> navigateSingleTopTo(route, nav) }
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) },
+                    onViewMap = { /* storeName: String -> */
+                        navigateSingleTopTo(Routes.MAP, nav)
+                    }
                 )
             }
 
@@ -129,6 +133,15 @@ fun AppNavigation() {
                     onSelectTab = { route -> navigateSingleTopTo(route, nav) }
                 )
             }
+            composable(Routes.MAP) {
+                MapScreenOSM(
+                    currentRoute = currentRoute,
+                    onSelectTab = { route -> navigateSingleTopTo(route, nav) },
+                    onBack = { navigateSingleTopTo(Routes.STORES, nav) } // volver a Tiendas
+                )
+            }
+
+
         }
     }
 }

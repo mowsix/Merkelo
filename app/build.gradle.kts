@@ -49,6 +49,7 @@ android {
 }
 
 dependencies {
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
     implementation(libs.androidx.material.icons.extended)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
