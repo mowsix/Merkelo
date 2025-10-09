@@ -17,6 +17,9 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.FolderOverlay
 import org.osmdroid.views.overlay.Marker
+import androidx.compose.ui.graphics.Color
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 
 /* ---------- Datos quemados (Medellín) ---------- */
 
@@ -145,6 +148,10 @@ private fun ChainsRow(
     selected: String,
     onSelect: (String) -> Unit
 ) {
+    val chipRed = Color(0xFFCE2B2B)      // rojo marca
+    val chipRedDark = Color(0xFF9E1F1F)  // rojo seleccionado
+    val white = Color(0xFFFFFFFF)
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -152,10 +159,17 @@ private fun ChainsRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         chains.forEach { c ->
+            val isSelected = c == selected
             FilterChip(
-                selected = c == selected,
+                selected = isSelected,
                 onClick = { onSelect(c) },
-                label = { Text(c) }
+                label = { Text(c) },
+                colors = FilterChipDefaults.filterChipColors(
+                    containerColor = chipRed,
+                    labelColor = white,
+                    selectedContainerColor = chipRedDark,
+                    selectedLabelColor = white
+                )
             )
         }
     }

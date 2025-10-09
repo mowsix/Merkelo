@@ -153,7 +153,11 @@ fun StoresScreen(
                 onClick = { onViewMap.invoke() },
                 modifier = Modifier
                     .height(56.dp)
-                    .fillMaxWidth(0.85f)
+                    .fillMaxWidth(0.85f),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MerkeloRed,
+                    contentColor = White100
+                ),
             ) {
                 Text("Visualizar en el mapa", fontSize = 18.sp)
             }
