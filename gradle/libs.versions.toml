@@ -1,14 +1,14 @@
 [versions]
 agp = "8.6.0"
-kotlin = "2.0.20"               # <— subimos Kotlin para alinear todo
-composeBom = "2025.01.00"       # puedes dejar esta, estable
+kotlin = "2.0.20"               
+composeBom = "2025.01.00"       
 activityCompose = "1.9.2"
 lifecycleRuntimeKtx = "2.8.6"
 navigationCompose = "2.8.0"
 accompanistSystemUi = "0.36.0"
 coreKtx = "1.13.1"
 coroutines = "1.9.0"
-room = "2.6.1"                  # <— permite minSdk 21
+room = "2.6.1"                  
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,7 +33,7 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanistSystemUi" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
-# Test (si los usas)
+# Tests
 junit = { group = "junit", name = "junit", version = "4.13.2" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
@@ -42,5 +42,5 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version = "2.0.20-1.0.24" }  # para Room
-kotlin-compose      = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }  # 👈 NUEVO
+kotlin-compose      = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }  
 
