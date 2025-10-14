@@ -101,64 +101,71 @@ fun StoresScreen(
             Text("Sugeridas y tus agregadas", fontWeight = FontWeight.Medium)
             Spacer(Modifier.height(8.dp))
 
-            Column(
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .heightIn(min = 60.dp, max = 340.dp) // 5 filas de 60-68dp aprox
                     .border(
                         width = 1.dp,
                         brush = SolidColor(Color.LightGray),
                         shape = MaterialTheme.shapes.medium
                     )
-                    .padding(vertical = 6.dp)
             ) {
-                // 1) SUGERIDAS por defecto (D1, Ara, etc.)
-                vm.defaultStores.forEach { store ->
-                    val alreadyFav = favorites.any { it.equals(store, ignoreCase = true) }
-                    StoreRow(
-                        name = store,
-                        right = {
-                            OutlinedIconButton(
-                                onClick = {
-                                    if (!alreadyFav) {
-                                        vm.addFavorite(store)
-                                        snackMessage = "“$store” añadida a favoritas"
+                val scrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .verticalScroll(scrollState)
+                        .padding(vertical = 6.dp)
+                ) {
+                    // 1) SUGERIDAS por defecto (D1, Ara, etc.)
+                    vm.defaultStores.forEach { store ->
+                        val alreadyFav = favorites.any { it.equals(store, ignoreCase = true) }
+                        StoreRow(
+                            name = store,
+                            right = {
+                                OutlinedIconButton(
+                                    onClick = {
+                                        if (!alreadyFav) {
+                                            vm.addFavorite(store)
+                                            snackMessage = "“$store” añadida a favoritas"
+                                        }
+                                    },
+                                    enabled = !alreadyFav
+                                ) {
+                                    if (alreadyFav) {
+                                        Icon(Icons.Default.Check, contentDescription = "Agregada", tint = MerkeloRed)
+                                    } else {
+                                        Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.Gray)
                                     }
-                                },
-                                enabled = !alreadyFav
-                            ) {
-                                if (alreadyFav) {
-                                    Icon(Icons.Default.Check, contentDescription = "Agregada", tint = MerkeloRed)
-                                } else {
-                                    Icon(Icons.Default.Add, contentDescription = "Agregar", tint = Color.Gray)
                                 }
                             }
-                        }
-                    )
-                }
+                        )
+                    }
 
-                // Separador visual sólo si hay personalizadas
-                if (customFavorites.isNotEmpty()) {
-                    Divider(Modifier.padding(vertical = 4.dp))
-                    Text(
-                        "Tus agregadas",
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
+                    // Separador visual sólo si hay personalizadas
+                    if (customFavorites.isNotEmpty()) {
+                        Divider(Modifier.padding(vertical = 4.dp))
+                        Text(
+                            "Tus agregadas",
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
 
-                // 2) FAVORITAS personalizadas (las que el usuario escribió)
-                customFavorites.forEach { store ->
-                    // Ya son favoritas, las mostramos con un check (deshabilitado)
-                    StoreRow(
-                        name = store,
-                        right = {
-                            OutlinedIconButton(onClick = { /* ya es favorita */ }, enabled = false) {
-                                Icon(Icons.Default.Check, contentDescription = "Agregada", tint = MerkeloRed)
+                    // 2) FAVORITAS personalizadas (las que el usuario escribió)
+                    customFavorites.forEach { store ->
+                        // Ya son favoritas, las mostramos con un check (deshabilitado)
+                        StoreRow(
+                            name = store,
+                            right = {
+                                OutlinedIconButton(onClick = { /* ya es favorita */ }, enabled = false) {
+                                    Icon(Icons.Default.Check, contentDescription = "Agregada", tint = MerkeloRed)
+                                }
                             }
-                        }
-                    )
+                        )
+                    }
                 }
             }
 
