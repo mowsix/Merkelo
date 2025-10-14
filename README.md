@@ -20,25 +20,30 @@ Aplicación móvil desarrollada en **Kotlin con Jetpack Compose**, que permite a
 
 El proyecto sigue una estructura limpia, basada en **MVVM (Model-View-ViewModel)**:
 
+## 🧱 Arquitectura
+
+El proyecto sigue una estructura limpia, basada en **MVVM (Model-View-ViewModel)**:
+
+```plaintext
 app/
 ├── data/
-│ ├── local/
-│ │ ├── Entities.kt
-│ │ └── Daos.kt
-│ ├── MarketRepository.kt
+│   ├── local/
+│   │   ├── Entities.kt
+│   │   └── Daos.kt
+│   └── MarketRepository.kt
 │
 ├── ui/
-│ ├── components/ (TopBar, BottomBar, botones reutilizables)
-│ ├── screens/ (Home, CreateList, AddProduct, Stores, Profile, Map, etc.)
-│ ├── theme/ (colores, tipografía, modo oscuro/claro)
+│   ├── components/            # TopBar, BottomBar, botones reutilizables
+│   ├── screens/               # Home, CreateList, AddProduct, Stores, Profile, Map, etc.
+│   └── theme/                 # Colores, tipografía, modo oscuro/claro
 │
 ├── navigation/
-│ ├── Routes.kt
-│ └── AppNavigation.kt
+│   ├── Routes.kt
+│   └── AppNavigation.kt
 │
-├── App.kt ← configuración de OSMDroid
-└── MainActivity.kt ← entry point Compose
-
+├── App.kt                     # Configuración de OSMDroid
+└── MainActivity.kt            # Entry point Compose
+```
 
 ---
 
