@@ -1,3 +1,4 @@
+// pantalla para crear una nueva lista de mercado
 package com.merqueloapp.ui.screens
 
 import androidx.compose.foundation.layout.*
@@ -20,34 +21,44 @@ import com.merqueloapp.ui.components.AppTopBar
 import com.merqueloapp.ui.theme.MerkeloRed
 import kotlinx.coroutines.launch
 
+// pantalla principal para crear una nueva lista de mercado
 @Composable
 fun CreateListScreen(
-    currentRoute: String,
-    onSelectTab: (String) -> Unit,
-    vm: CreateListViewModel = viewModel()
+    currentRoute: String,              // ruta actual de navegacion
+    onSelectTab: (String) -> Unit,     // callback para cambiar de pestaña
+    vm: CreateListViewModel = viewModel() // viewmodel que maneja la logica
 ) {
+    // carga las sugerencias de tiendas y productos al iniciar
     LaunchedEffect(Unit) { vm.loadSuggestions() }
 
+    // estados para controlar la visualizacion de los dialogos
     var showStores by remember { mutableStateOf(false) }
     var showProductsForStore by remember { mutableStateOf<String?>(null) }
 
-    // VM state
+    // estados del viewmodel
     val name by vm.listName.collectAsState()
     val stores by vm.stores.collectAsState()
     val storeSuggestions by vm.storeSuggestions.collectAsState()
     val productSuggestions by vm.productSuggestions.collectAsState()
 
+    // validaciones para habilitar/deshabilitar el guardado
     val hasAtLeastOneProduct = stores.any { it.products.isNotEmpty() }
     val canSave = name.isNotBlank() && stores.isNotEmpty() && hasAtLeastOneProduct
 
+    // configuracion para mostrar mensajes al usuario
     val snackbarHost = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
+    // estructura principal de la pantalla
     Scaffold(
+        // barra superior con titulo
         topBar = { AppTopBar(title = "Lista") },
+        // barra inferior de navegacion
         bottomBar = { AppBottomBar(currentRoute = currentRoute, onSelect = onSelectTab) },
+        // configuracion para mostrar mensajes al usuario
         snackbarHost = { SnackbarHost(snackbarHost) }
     ) { inner ->
+        // contenedor principal vertical
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -56,11 +67,16 @@ fun CreateListScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(12.dp))
-            Text("Crea una nueva lista de mercado", style = MaterialTheme.typography.titleLarge)
+            
+            // titulo de la pantalla
+            Text(
+                "Crea una nueva lista de mercado", 
+                style = MaterialTheme.typography.titleLarge
+            )
 
             Spacer(Modifier.height(20.dp))
 
-            // Nombre de la lista
+            // campo para el nombre de la lista
             OutlinedTextField(
                 value = name,
                 onValueChange = vm::setListName,
@@ -68,13 +84,17 @@ fun CreateListScreen(
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth()
             )
+            // mensaje de validacion
             if (name.isBlank()) {
-                Text("Debes escribir un nombre.", color = MaterialTheme.colorScheme.error)
+                Text(
+                    "Debes escribir un nombre.", 
+                    color = MaterialTheme.colorScheme.error
+                )
             }
 
             Spacer(Modifier.height(20.dp))
 
-            // Agregar tienda (una por vez) -> abre diálogo y luego productos de esa tienda
+            // boton para agregar una nueva tienda
             ElevatedButton(
                 onClick = { showStores = true },
                 modifier = Modifier
@@ -86,15 +106,23 @@ fun CreateListScreen(
                     contentColor = Color.White
                 )
             ) {
-                Text("Agregar tienda", fontWeight = FontWeight.Medium, fontSize = 18.sp)
+                Text(
+                    "Agregar tienda", 
+                    fontWeight = FontWeight.Medium, 
+                    fontSize = 18.sp
+                )
             }
+            // mensaje de validacion
             if (stores.isEmpty()) {
-                Text("Agrega al menos una tienda.", color = MaterialTheme.colorScheme.error)
+                Text(
+                    "Agrega al menos una tienda.", 
+                    color = MaterialTheme.colorScheme.error
+                )
             }
 
             Spacer(Modifier.height(24.dp))
 
-            // Resumen SIEMPRE visible (con opción de editar productos por tienda)
+            // seccion de resumen de la lista
             Text(
                 text = "Resumen",
                 style = MaterialTheme.typography.titleMedium,
