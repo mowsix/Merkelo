@@ -35,8 +35,8 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
 
-    // 👇 si quieres, esto es válido y NO rompe:
-    // kotlin { jvmToolchain(17) }
+    
+    
 
     buildFeatures { compose = true }
 
